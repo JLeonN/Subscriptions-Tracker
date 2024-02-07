@@ -1,7 +1,17 @@
 import { useState } from "react";
 
-const FormAddSubs = ({ setType, setPrice, type, price, setSubs, subs }) => {
+const FormAddSubs = ({ setType,
+  setPrice,
+  type,
+  price,
+  setSubs,
+  subs,
+  editId,
+  setEditId,
+  spent,
+  count }) => {
   const [error, setError] = useState(false);
+  const [errorMoney, setErrorMoney] = useState(false);
 
   const handleSubs = e => {
     e.preventDefault();
@@ -9,13 +19,31 @@ const FormAddSubs = ({ setType, setPrice, type, price, setSubs, subs }) => {
       setError(true);
       return;
     }
-    setError(false);
-    const data = {
-      type: type,
-      price: price,
-      id: Date.now()
+    if (count - spent < Number(price)) {
+      setErrorMoney(true);
+      return;
     }
-    setSubs([...subs, data]);
+    setError(false);
+    setErrorMoney(false);
+    if (editId != "") {
+      setEditId("");
+      const newSubs = subs.map(item => {
+        if (item.id === editId) {
+          item.type = type;
+          item.price = price;
+        }
+        return item;
+      })
+      setSubs(newSubs);
+    } else {
+      const data = {
+        type: type,
+        price: price,
+        id: Date.now()
+      }
+      setSubs([...subs, data]);
+    }
+
     setType("");
     setPrice("");
     // console.log(subs);
@@ -31,24 +59,26 @@ const FormAddSubs = ({ setType, setPrice, type, price, setSubs, subs }) => {
         <select onChange={e => setType(e.target.value)} value={type}>
           <option value="">-- Elegir --</option>
           <option value="netflix">Netflix</option>
-          <option value="youtube">Youtube</option>
-          <option value="disneyplus">Disney Plus</option>
-          <option value="starplus">Star Plus</option>
-          <option value="hbomax">HBO Max</option>
-          <option value="primevideo">Prime Video</option>
+          <option value="disneyPlus">Disney Plus</option>
+          <option value="hboMax">HBO Max</option>
+          <option value="starPlus">Star Plus</option>
+          <option value="primeVideo">Prime Video</option>
           <option value="spotify">Spotify</option>
           <option value="apletv">Aple TV</option>
-          <option value="anteltv">Antel TV</option>
-          <option value="discord">Discord</option>
-          <option value="geforcenow">Geforce Now</option>
           <option value="worldofwarcraft">World Of Warcraft</option>
+          <option value="youtube">Youtube</option>
+          <option value="discord">Discord</option>
           <option value="paramount">Paramount</option>
+          <option value="anteltv">Antel TV</option>
+          <option value="geforcenow">Geforce Now</option>
         </select>
         <p>Cantidad</p>
         <input type="number" placeholder="$20" onChange={e => setPrice(e.target.value)} value={price} />
-        <input type="submit" value="Agregar" />
+        {editId != "" ? <input type="submit" value="Guardar" />
+          : <input type="submit" value="Agregar" />}
       </form>
       {error ? <p className="error">Campos invalidos</p> : null}
+      {errorMoney ? <p className="error">No tienes money 😕</p> : null}
     </div>
   );
 }
