@@ -10,7 +10,7 @@ body{
   width: 60%;
   margin: 0 auto;
   text-align: center;
-  background-image: linear-gradient(130deg, rgb(243, 33, 163), rgb(103, 214, 205));
+  background-image: linear-gradient(130deg, rgb(33, 150, 243), rgb(103, 214, 205));
   box-shadow: rgb(33 150 243 / 68%) 0px 0px 1rem 2px;
   border-radius: 10px;
   margin-top: 3%;
